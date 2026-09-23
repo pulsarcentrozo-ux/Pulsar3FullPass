@@ -1,0 +1,376 @@
+﻿<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pulsar Season 3 Full Pass</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#ccf6d3; --card:#ffffff; --ink:#202124; --muted:#5f6368; --line:#dadce0;
+    --accent:#1fd24a; --accent-ink:#0b7a26; --focus:#1a73e8; --error:#d93025;
+    --soft:#effcf1;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--bg);color:var(--ink);font:15px/1.5 Roboto,"Helvetica Neue",Arial,sans-serif;
+       padding:24px 16px calc(48px + env(safe-area-inset-bottom,0px));}
+  .wrap{max-width:640px;margin:0 auto}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:24px;margin-bottom:12px}
+  .head{border-top:10px solid var(--accent)}
+  h1{font:400 32px/1.25 "Google Sans",Roboto,Arial,sans-serif;margin:0 0 12px}
+  .head p{margin:0;font-size:14px}
+  .req-note{color:var(--error);font-size:14px;margin-top:16px;border-top:1px solid var(--line);padding-top:12px}
+  label.q{display:block;font-size:16px;margin-bottom:16px}
+  label.q .star{color:var(--error)}
+  input[type=text],input[type=email],input[type=tel],input[type=date]{
+    width:100%;max-width:320px;border:0;border-bottom:1px solid var(--line);padding:6px 0;
+    font:inherit;background:transparent;color:var(--ink);outline:none;transition:border-color .2s}
+  input:focus{border-bottom:2px solid var(--accent-ink);padding-bottom:5px}
+  select{width:100%;font:inherit;padding:10px 12px;border:1px solid var(--line);border-radius:4px;background:#fff;color:var(--ink)}
+  select:focus-visible,button:focus-visible,a:focus-visible,input[type=checkbox]:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+  .card.invalid{border-color:var(--error)}
+  .err{display:none;color:var(--error);font-size:13px;margin-top:10px}
+  .card.invalid .err{display:block}
+  .hint{margin-top:16px;padding:14px 16px;background:var(--soft);border-left:4px solid var(--accent);border-radius:4px;font-size:14px}
+  .hint[hidden]{display:none}
+  .hint strong{font-weight:500}
+  .extra{margin-top:18px}
+  .extra[hidden]{display:none}
+  .consent{display:flex;gap:10px;align-items:flex-start;font-size:14px}
+  .consent input{margin-top:3px;accent-color:var(--accent-ink);width:18px;height:18px}
+  .actions{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+  .btn{background:var(--accent-ink);color:#fff;border:0;border-radius:4px;padding:10px 24px;font:500 14px Roboto,Arial,sans-serif;cursor:pointer;text-decoration:none;display:inline-block}
+  .btn:disabled{opacity:.6;cursor:wait}
+  .btn.ghost{background:transparent;color:var(--accent-ink);border:1px solid var(--line)}
+  .link{background:none;border:0;color:var(--accent-ink);font:500 14px Roboto,Arial,sans-serif;cursor:pointer;padding:0}
+  .form-error{display:none;color:var(--error);font-size:14px;margin:8px 0 0}
+  .hp{position:absolute;left:-5000px}
+  /* Conferma */
+  #done[hidden],#form[hidden]{display:none}
+  .kv{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;margin:16px 0;font-size:14px}
+  .kv dt{color:var(--muted)} .kv dd{margin:0;word-break:break-all}
+  .iban{font:500 15px/1.4 Roboto,Arial,sans-serif;letter-spacing:.04em}
+  .row{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+  .done-title{font:400 24px/1.3 "Google Sans",Roboto,Arial,sans-serif;margin:0 0 8px}
+  footer{text-align:center;color:var(--muted);font-size:12px;margin-top:24px}
+  @media (max-width:480px){ h1{font-size:26px} .card{padding:20px 16px} }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<main class="wrap">
+
+  <section class="card head">
+    <h1>Acquista il Pulsar Season 3 Full Pass!</h1>
+    <p>Lascia i tuoi dati e scegli la modalità di acquisto dell'abbonamento alla terza stagione di Pulsar.</p>
+    <p class="req-note">* Indica una domanda obbligatoria</p>
+  </section>
+
+  <form id="form" novalidate>
+    <div class="card" data-field="nome">
+      <label class="q" for="nome">Nome <span class="star">*</span></label>
+      <input type="text" id="nome" name="nome" autocomplete="given-name" placeholder="La tua risposta" required>
+      <div class="err" role="alert">Inserisci il tuo nome.</div>
+    </div>
+
+    <div class="card" data-field="cognome">
+      <label class="q" for="cognome">Cognome <span class="star">*</span></label>
+      <input type="text" id="cognome" name="cognome" autocomplete="family-name" placeholder="La tua risposta" required>
+      <div class="err" role="alert">Inserisci il tuo cognome.</div>
+    </div>
+
+    <div class="card" data-field="email">
+      <label class="q" for="email">Email <span class="star">*</span></label>
+      <input type="email" id="email" name="email" autocomplete="email" placeholder="La tua risposta" required>
+      <div class="err" role="alert">Inserisci un indirizzo email valido.</div>
+    </div>
+
+    <div class="card" data-field="telefono">
+      <label class="q" for="telefono">Numero di telefono <span class="star">*</span></label>
+      <input type="tel" id="telefono" name="telefono" autocomplete="tel" placeholder="La tua risposta" required>
+      <div class="err" role="alert">Inserisci un numero di telefono valido.</div>
+    </div>
+
+    <div class="card" data-field="modalita">
+      <label class="q" for="modalita">Modalità di acquisto <span class="star">*</span></label>
+      <select id="modalita" name="modalita" required>
+        <option value="">Scegli</option>
+        <option value="BONIFICO">Bonifico e ricezione via mail</option>
+        <option value="ZO_FERIALE">Presso Zo dal lunedì al venerdì dalle 10 alle 13:30 previa prenotazione</option>
+        <option value="ZO_POMERIGGIO">Presso Zo un pomeriggio dalle 15 alle 17 da concordare</option>
+        <option value="ZO_HEARTWORMS">Presso Zo la sera del live di Heartworms (09/10/26) dalle 20 in poi</option>
+      </select>
+      <div class="err" role="alert">Scegli una modalità di acquisto.</div>
+
+      <!-- Suggerimenti condizionali mostrati sotto la domanda -->
+      <div class="hint" data-for="BONIFICO" hidden>Dopo l'invio ricevi una mail con IBAN, beneficiario e causale. Il pass ti arriva via mail appena riceviamo il bonifico.</div>
+      <div class="hint" data-for="ZO_FERIALE" hidden>La mattina in cui vuoi venire chiama lo <strong>095 816 8912</strong> per prenotare il tuo orario, tra le 10 e le 13:30.</div>
+      <div class="hint" data-for="ZO_POMERIGGIO" hidden>Indica il giorno che preferisci: la segreteria di Zo riceve la tua richiesta e ti ricontatta per confermarla.</div>
+      <div class="hint" data-for="ZO_HEARTWORMS" hidden>La sera del live, dalle 20, di' alla cassa che hai prenotato l'abbonamento, dai nome e cognome e paga con carta o contanti.</div>
+
+      <div class="extra" id="extra-giorno" hidden>
+        <label class="q" for="giorno">Giorno preferito <span class="star">*</span></label>
+        <input type="date" id="giorno" name="giorno">
+        <div class="err" style="display:none" id="err-giorno" role="alert">Scegli un giorno a partire da domani.</div>
+      </div>
+    </div>
+
+    <div class="card" data-field="privacy">
+      <label class="consent">
+        <input type="checkbox" id="privacy" name="privacy" required>
+        <span>Acconsento al trattamento dei miei dati per gestire l'acquisto e ricevere comunicazioni su Pulsar. <a href="#" id="privacy-link">Informativa privacy</a> <span class="star" style="color:var(--error)">*</span></span>
+      </label>
+      <div class="err" role="alert">Serve il tuo consenso per procedere.</div>
+    </div>
+
+    <!-- Honeypot anti-bot di Mailchimp: non toccare -->
+    <div class="hp" aria-hidden="true"><input type="text" id="hp" tabindex="-1" value=""></div>
+
+    <div class="actions">
+      <button type="submit" class="btn" id="submit">Invia</button>
+      <button type="reset" class="link" id="reset">Cancella modulo</button>
+    </div>
+    <p class="form-error" id="form-error" role="alert"></p>
+  </form>
+
+  <!-- Schermata di conferma, riempita in base alla modalità -->
+  <section id="done" hidden aria-live="polite"></section>
+
+  <footer>Pulsar · Stagione 3</footer>
+</main>
+
+<script>
+/* ================== CONFIGURAZIONE ==================
+   Compila questi valori prima di mettere online la pagina.
+   Se mailchimp.u è vuoto la pagina funziona in modalità demo (non invia nulla). */
+const CONFIG = {
+  mailchimp: {
+    // Da Mailchimp > Audience > Signup forms > Embedded forms: copia l'URL dell'attributo action del <form>
+    // es. "https://pulsar.us21.list-manage.com/subscribe/post?u=abc123&id=def456&f_id=00xyz"
+    actionUrl: "https://gmail.us19.list-manage.com/subscribe/post?u=4e43d1a2b03454f4624fc3f9d&id=1c648aafce&f_id=002f3fe3f0",
+    // Tag dei campi (Audience > Settings > Audience fields and *|MERGE|* tags)
+    merge: { nome:"FNAME", cognome:"LNAME", email:"EMAIL", telefono:"PHONE", modalita:"MODALITA", giorno:"GIORNO" },
+    // Facoltativo: ID numerico del tag Mailchimp da assegnare per ogni modalità
+    tagIds: { BONIFICO:"", ZO_FERIALE:"", ZO_POMERIGGIO:"", ZO_HEARTWORMS:"" }
+  },
+  bonifico: {
+    iban: "IT76G0306909606100000160910",
+    beneficiario: "Associazione Culturale Zo",
+    importo: "",                               // es. "€ 60,00" (lascia vuoto per nasconderlo)
+    emailRicevuta: ""                          // es. "info@pulsar.it" per l'invio della contabile
+  },
+  zo: {
+    indirizzo: "Zo Centro Culture Contemporanee, Piazzale Asia 6, Catania",
+    telefono: "095 816 8912",
+    telefonoLink: "+390958168912"
+  },
+  heartworms: { titolo:"Heartworms live @ Zo", data:"2026-10-09", ora:"20:00" },
+  // Mail automatica alla segreteria per le richieste di ritiro pomeridiano (servizio gratuito FormSubmit).
+  // Al primo invio FormSubmit manda a questo indirizzo una mail di attivazione: va confermata una volta.
+  // Dopo l'attivazione puoi sostituire l'indirizzo con il codice alias che FormSubmit ti fornisce.
+  segreteria: { endpoint: "https://formsubmit.co/ajax/segreteriazoculture@gmail.com" }
+};
+/* ==================================================== */
+
+const $ = s => document.querySelector(s);
+const form = $('#form'), sel = $('#modalita'), extraGiorno = $('#extra-giorno'), giorno = $('#giorno');
+
+// Data minima per il pomeriggio da concordare: domani
+const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate()+1);
+giorno.min = tomorrow.toISOString().slice(0,10);
+
+// Comportamento condizionale nel form
+sel.addEventListener('change', () => {
+  document.querySelectorAll('.hint').forEach(h => h.hidden = h.dataset.for !== sel.value);
+  const needDay = sel.value === 'ZO_POMERIGGIO';
+  extraGiorno.hidden = !needDay;
+  giorno.required = needDay;
+  if (!needDay) giorno.value = '';
+  sel.closest('.card').classList.remove('invalid');
+});
+
+form.addEventListener('input', e => e.target.closest('.card')?.classList.remove('invalid'));
+form.addEventListener('reset', () => setTimeout(() => sel.dispatchEvent(new Event('change'))));
+$('#privacy-link').addEventListener('click', e => { if ($('#privacy-link').getAttribute('href') === '#') e.preventDefault(); });
+
+function validate(){
+  let ok = true, first = null;
+  const mark = (name, bad) => { const c = form.querySelector(`[data-field="${name}"]`); c.classList.toggle('invalid', bad); if (bad){ ok=false; first ||= c; } };
+  mark('nome', !$('#nome').value.trim());
+  mark('cognome', !$('#cognome').value.trim());
+  mark('email', !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test($('#email').value.trim()));
+  mark('telefono', $('#telefono').value.replace(/[^\d]/g,'').length < 8);
+  mark('modalita', !sel.value);
+  const dayBad = sel.value === 'ZO_POMERIGGIO' && (!giorno.value || giorno.value < giorno.min);
+  $('#err-giorno').style.display = dayBad ? 'block' : 'none';
+  if (dayBad){ ok=false; first ||= sel.closest('.card'); }
+  mark('privacy', !$('#privacy').checked);
+  if (first) first.scrollIntoView({behavior:'smooth', block:'center'});
+  return ok;
+}
+
+// Invio a Mailchimp tramite l'endpoint JSONP dei form incorporati (funziona da qualsiasi sito, senza server)
+function mailchimpSubscribe(data){
+  const m = CONFIG.mailchimp;
+  if (!m.actionUrl) return new Promise(r => setTimeout(() => r({result:'success', demo:true}), 600));
+  const url = new URL(m.actionUrl.replace(/&amp;/g, "&").replace('/post?', '/post-json?'));
+  const p = url.searchParams;
+  p.set(m.merge.email, data.email);
+  p.set(m.merge.nome, data.nome);
+  p.set(m.merge.cognome, data.cognome);
+  p.set(m.merge.telefono, data.telefono);
+  p.set(m.merge.modalita, data.modalita);
+  if (data.giorno) p.set(m.merge.giorno, data.giorno.split('-').reverse().join('/'));
+  const tag = m.tagIds[data.modalita]; if (tag) p.set('tags', tag);
+  // honeypot richiesto da Mailchimp: b_<u>_<id>
+  p.set(`b_${p.get('u')}_${p.get('id')}`, $('#hp').value);
+  return new Promise((resolve, reject) => {
+    const cb = 'mc_cb_' + Date.now();
+    const s = document.createElement('script');
+    const clean = () => { delete window[cb]; s.remove(); clearTimeout(t); };
+    const t = setTimeout(() => { clean(); reject(new Error('timeout')); }, 15000);
+    window[cb] = res => { clean(); resolve(res); };
+    s.onerror = () => { clean(); reject(new Error('network')); };
+    p.set('c', cb);
+    s.src = url.toString();
+    document.body.appendChild(s);
+  });
+}
+
+// Notifica alla segreteria di Zo per le richieste di appuntamento pomeridiano
+async function notifySegreteria(d){
+  if (!CONFIG.mailchimp.actionUrl) return; // modalità demo: nessun invio reale
+  const giornoIt = new Date(d.giorno + 'T12:00').toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  const r = await fetch(CONFIG.segreteria.endpoint, {
+    signal: AbortSignal.timeout ? AbortSignal.timeout(15000) : undefined,
+    method:'POST',
+    headers:{'Content-Type':'application/json','Accept':'application/json'},
+    body: JSON.stringify({
+      _subject: `Richiesta ritiro pomeridiano Full Pass: ${d.nome} ${d.cognome} (${giornoIt})`,
+      _template: 'table', _captcha: 'false', _replyto: d.email,
+      Nome: d.nome, Cognome: d.cognome, Email: d.email, Telefono: d.telefono,
+      'Giorno preferito': giornoIt, Fascia: '15:00 - 17:00'
+    })
+  });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok || String(j.success) === 'false') {
+    console.warn('Risposta FormSubmit:', j);
+    const e = new Error('notify'); e.detail = j.message || ''; throw e;
+  }
+}
+
+form.addEventListener('submit', async e => {
+  e.preventDefault();
+  $('#form-error').style.display = 'none';
+  if (!validate()) return;
+  const data = {
+    nome: $('#nome').value.trim(), cognome: $('#cognome').value.trim(),
+    email: $('#email').value.trim(), telefono: $('#telefono').value.trim(),
+    modalita: sel.value, giorno: giorno.value
+  };
+  const btn = $('#submit'); btn.disabled = true; btn.textContent = 'Invio in corso…';
+  try {
+    const res = await mailchimpSubscribe(data);
+    const already = res.result === 'error' && /already subscribed|già iscritt/i.test(res.msg || '');
+    if (!(res.result === 'success' || already)) {
+      console.warn('Risposta Mailchimp:', res);
+      const raw = (res.msg || '').replace(/<[^>]+>/g,'');
+      const m = raw.match(/^(\d+)\s*-\s*(.*)$/);
+      throw new Error(m ? `${m[2]} (Mailchimp, campo MERGE${m[1]})` : raw);
+    }
+    if (data.modalita === 'ZO_POMERIGGIO') {
+      await notifySegreteria(data).catch(e => {
+        const n = new Error('notify');
+        n.detail = e.detail || (location.protocol === 'file:' ? 'La pagina è aperta come file dal computer: caricala online per inviare la mail.' : '');
+        throw n;
+      });
+    }
+    showDone(data);
+  } catch (err) {
+    const msg = err.message === 'notify'
+      ? 'La richiesta non è arrivata alla segreteria di Zo. Premi di nuovo Invia.' + (err.detail ? ' Dettaglio: ' + err.detail : '')
+      : err.message && !['timeout','network'].includes(err.message)
+      ? err.message : 'Invio non riuscito. Controlla la connessione e premi di nuovo Invia.';
+    $('#form-error').textContent = msg; $('#form-error').style.display = 'block';
+  } finally { btn.disabled = false; btn.textContent = 'Invia'; }
+});
+
+// Schermate di conferma condizionali
+function showDone(d){
+  const b = CONFIG.bonifico, z = CONFIG.zo, h = CONFIG.heartworms;
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const nome = esc(d.nome);
+  const causale = `Pulsar S3 Full Pass - ${d.nome} ${d.cognome}`;
+  const tel = `<a class="btn" href="tel:${z.telefonoLink}">Chiama ${z.telefono}</a>`;
+  let html = '';
+
+  if (d.modalita === 'BONIFICO') {
+    html = `<h2 class="done-title">Grazie ${nome}, ora completa il bonifico</h2>
+      <p>Ti abbiamo inviato queste istruzioni anche a ${esc(d.email)}. Se non trovi la mail, controlla la cartella spam. Appena riceviamo il pagamento ti inviamo il Full Pass.</p>
+      <dl class="kv">
+        <dt>IBAN</dt><dd class="iban">${b.iban}</dd>
+        <dt>Beneficiario</dt><dd>${esc(b.beneficiario)}</dd>
+        ${b.importo ? `<dt>Importo</dt><dd>${esc(b.importo)}</dd>` : ''}
+        <dt>Causale</dt><dd>${esc(causale)}</dd>
+      </dl>
+      ${b.emailRicevuta ? `<p>Per velocizzare, inoltra la contabile a <a href="mailto:${b.emailRicevuta}">${b.emailRicevuta}</a>.</p>` : ''}
+      <div class="row">
+        <button class="btn" data-copy="${b.iban}">Copia IBAN</button>
+        <button class="btn ghost" data-copy="${esc(causale)}">Copia causale</button>
+      </div>`;
+  }
+  if (d.modalita === 'ZO_FERIALE') {
+    html = `<h2 class="done-title">Grazie ${nome}, ora prenota il tuo orario</h2>
+      <p>La mattina in cui vuoi passare da Zo, chiama lo ${z.telefono} e prenota il tuo slot. Si ritira dal lunedì al venerdì, tra le 10 e le 13:30.</p>
+      <dl class="kv"><dt>Telefono</dt><dd>${z.telefono}</dd><dt>Orari</dt><dd>Lunedì–venerdì, 10:00–13:30</dd><dt>Dove</dt><dd>${esc(z.indirizzo)}</dd></dl>
+      <div class="row">${tel}</div>`;
+  }
+  if (d.modalita === 'ZO_POMERIGGIO') {
+    const giornoIt = new Date(d.giorno + 'T12:00').toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'});
+    html = `<h2 class="done-title">Grazie ${nome}, richiesta inviata</h2>
+      <p>La segreteria di Zo ha ricevuto la tua richiesta per <strong>${giornoIt}</strong>, tra le 15 e le 17, e ti ricontatta al ${esc(d.telefono)} per confermare l'appuntamento.</p>
+      <dl class="kv"><dt>Dove</dt><dd>${esc(z.indirizzo)}</dd></dl>`;
+  }
+  if (d.modalita === 'ZO_HEARTWORMS') {
+    html = `<h2 class="done-title">Grazie ${nome}, ci vediamo al live</h2>
+      <p>Venerdì 9 ottobre, dalle 20, passa alla cassa di Zo e:</p>
+      <ul>
+        <li>di' che hai prenotato l'acquisto dell'abbonamento Pulsar Season 3;</li>
+        <li>dai il tuo nome e cognome: <strong>${nome} ${esc(d.cognome)}</strong>;</li>
+        <li>paga con carta o in contanti.</li>
+      </ul>
+      <dl class="kv"><dt>Quando</dt><dd>Venerdì 9 ottobre 2026, dalle 20:00</dd><dt>Dove</dt><dd>${esc(z.indirizzo)}</dd></dl>
+      <div class="row"><button class="btn" id="ics">Aggiungi al calendario</button></div>`;
+  }
+
+  const done = $('#done');
+  done.innerHTML = `<div class="card head">${html}</div>`;
+  form.hidden = true; done.hidden = false;
+  window.scrollTo({top:0, behavior:'smooth'});
+
+  done.querySelectorAll('[data-copy]').forEach(btn => btn.addEventListener('click', async () => {
+    const label = btn.textContent;
+    try { await navigator.clipboard.writeText(btn.dataset.copy); btn.textContent = 'Copiato'; }
+    catch { btn.textContent = 'Copia manualmente'; }
+    setTimeout(() => btn.textContent = label, 1800);
+  }));
+  $('#ics')?.addEventListener('click', () => {
+    const start = h.data.replace(/-/g,'') + 'T' + h.ora.replace(':','') + '00';
+    const ics = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Pulsar//IT','BEGIN:VEVENT',
+      'UID:pulsar-heartworms-' + Date.now() + '@pulsar',
+      'DTSTAMP:' + new Date().toISOString().replace(/[-:]/g,'').split('.')[0] + 'Z',
+      'DTSTART;TZID=Europe/Rome:' + start,
+      'DTEND;TZID=Europe/Rome:' + h.data.replace(/-/g,'') + 'T235900',
+      'SUMMARY:' + h.titolo + ' + ritiro Pulsar S3 Full Pass',
+      'LOCATION:' + z.indirizzo.replace(/,/g,'\\,'),
+      'END:VEVENT','END:VCALENDAR'].join('\r\n');
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([ics], {type:'text/calendar'}));
+    a.download = 'heartworms-zo.ics'; a.click();
+  });
+}
+</script>
+</body>
+</html>
