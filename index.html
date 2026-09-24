@@ -222,7 +222,7 @@ async function workerSubscribe(data){
     body: JSON.stringify({ ...data, privacy: $('#privacy').checked, hp: $('#hp').value })
   });
   const j = await r.json().catch(() => ({}));
-  return j.ok ? { result:'success', stato:j.stato } : { result:'error', msg: j.error || 'Errore del server (' + r.status + ')' };
+  return j.ok ? { result:'success', stato:j.stato, importo:j.importo, riservato:j.riservato } : { result:'error', msg: j.error || 'Errore del server (' + r.status + ')' };
 }
 
 function mailchimpSubscribe(data){
