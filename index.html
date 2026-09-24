@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -18,7 +18,7 @@
        padding:24px 16px calc(48px + env(safe-area-inset-bottom,0px));}
   .wrap{max-width:640px;margin:0 auto}
   .card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:24px;margin-bottom:12px}
-     .banner{display:block;width:100%;height:auto;aspect-ratio:4/1;object-fit:cover;border-radius:8px;margin-bottom:12px;border:1px solid var(--line)}
+   .banner{display:block;width:100%;height:auto;aspect-ratio:4/1;object-fit:cover;border-radius:8px;margin-bottom:12px;border:1px solid var(--line)}
   .head{border-top:10px solid var(--accent)}
   h1{font:400 32px/1.25 "Google Sans",Roboto,Arial,sans-serif;margin:0 0 12px}
   .head p{margin:0;font-size:14px}
@@ -265,7 +265,8 @@ async function notifySegreteria(d){
       _subject: `Richiesta ritiro pomeridiano Full Pass: ${d.nome} ${d.cognome} (${giornoIt})`,
       _template: 'table', _captcha: 'false', _replyto: d.email,
       Nome: d.nome, Cognome: d.cognome, Email: d.email, Telefono: d.telefono,
-      'Giorno preferito': giornoIt, Fascia: '15:00 - 17:00'
+      'Giorno preferito': giornoIt, Fascia: '15:00 - 17:00',
+      Prezzo: (d.importo || CONFIG.bonifico.importo || 'standard') + (d.riservato ? ' (riservato biglietto Heartworms)' : '')
     })
   });
   const j = await r.json().catch(() => ({}));
@@ -294,6 +295,7 @@ form.addEventListener('submit', async e => {
       const m = raw.match(/^(\d+)\s*-\s*(.*)$/);
       throw new Error(m ? `${m[2]} (Mailchimp, campo MERGE${m[1]})` : raw);
     }
+    data.stato = res.stato; data.importo = res.importo || ''; data.riservato = !!res.riservato;
     if (data.modalita === 'ZO_POMERIGGIO') {
       await notifySegreteria(data).catch(e => {
         const n = new Error('notify');
@@ -301,7 +303,6 @@ form.addEventListener('submit', async e => {
         throw n;
       });
     }
-    data.stato = res.stato;
     showDone(data);
   } catch (err) {
     const msg = err.message === 'notify'
@@ -327,7 +328,6 @@ function showDone(d){
       <dl class="kv">
         <dt>IBAN</dt><dd class="iban">${b.iban}</dd>
         <dt>Beneficiario</dt><dd>${esc(b.beneficiario)}</dd>
-        ${b.importo ? `<dt>Importo</dt><dd>${esc(b.importo)}</dd>` : ''}
         <dt>Causale</dt><dd>${esc(causale)}</dd>
       </dl>
       ${b.emailRicevuta ? `<p>Per velocizzare, inoltra la contabile a <a href="mailto:${b.emailRicevuta}">${b.emailRicevuta}</a>.</p>` : ''}
@@ -361,6 +361,11 @@ function showDone(d){
   }
 
   if (d.stato === 'pending') html += `<p class="hint">Ti abbiamo inviato anche una mail per confermare l'iscrizione alla nostra lista: cliccala per ricevere le prossime comunicazioni.</p>`;
+  const importo = d.importo || b.importo;
+  if (importo) {
+    const riga = `<dt>Prezzo</dt><dd><strong>${esc(importo)}</strong>${d.riservato ? ' · prezzo riservato a chi ha acquistato il biglietto di Heartworms' : ''}</dd>`;
+    html = html.replace('<dl class="kv">', '<dl class="kv">' + riga);
+  }
   const done = $('#done');
   done.innerHTML = `<div class="card head">${html}</div>`;
   form.hidden = true; done.hidden = false;
