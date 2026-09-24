@@ -149,6 +149,9 @@ const CONFIG = {
   mailchimp: {
     // Da Mailchimp > Audience > Signup forms > Embedded forms: copia l'URL dell'attributo action del <form>
     // es. "https://pulsar.us21.list-manage.com/subscribe/post?u=abc123&id=def456&f_id=00xyz"
+    // Indirizzo del Cloudflare Worker (es. "https://pulsar-mailchimp.tuonome.workers.dev").
+    // Se compilato, la pagina usa il Worker: aggiorna anche i contatti già iscritti e assegna i tag.
+    apiUrl: "https://mailchimp.pulsar-centrozo.workers.dev/",
     actionUrl: "https://gmail.us19.list-manage.com/subscribe/post?u=4e43d1a2b03454f4624fc3f9d&id=1c648aafce&f_id=002f3fe3f0",
     // Tag dei campi (Audience > Settings > Audience fields and *|MERGE|* tags)
     merge: { nome:"FNAME", cognome:"LNAME", email:"EMAIL", telefono:"PHONE", modalita:"MODALITA", giorno:"GIORNO" },
@@ -212,8 +215,18 @@ function validate(){
 }
 
 // Invio a Mailchimp tramite l'endpoint JSONP dei form incorporati (funziona da qualsiasi sito, senza server)
+async function workerSubscribe(data){
+  const r = await fetch(CONFIG.mailchimp.apiUrl, {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ ...data, privacy: $('#privacy').checked, hp: $('#hp').value })
+  });
+  const j = await r.json().catch(() => ({}));
+  return j.ok ? { result:'success', stato:j.stato } : { result:'error', msg: j.error || 'Errore del server (' + r.status + ')' };
+}
+
 function mailchimpSubscribe(data){
   const m = CONFIG.mailchimp;
+  if (m.apiUrl) return workerSubscribe(data).catch(() => Promise.reject(new Error('network')));
   if (!m.actionUrl) return new Promise(r => setTimeout(() => r({result:'success', demo:true}), 600));
   const url = new URL(m.actionUrl.replace(/&amp;/g, "&").replace('/post?', '/post-json?'));
   const p = url.searchParams;
@@ -241,7 +254,7 @@ function mailchimpSubscribe(data){
 
 // Notifica alla segreteria di Zo per le richieste di appuntamento pomeridiano
 async function notifySegreteria(d){
-  if (!CONFIG.mailchimp.actionUrl) return; // modalità demo: nessun invio reale
+  if (!CONFIG.mailchimp.actionUrl && !CONFIG.mailchimp.apiUrl) return; // modalità demo: nessun invio reale
   const giornoIt = new Date(d.giorno + 'T12:00').toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
   const r = await fetch(CONFIG.segreteria.endpoint, {
     signal: AbortSignal.timeout ? AbortSignal.timeout(15000) : undefined,
@@ -287,6 +300,7 @@ form.addEventListener('submit', async e => {
         throw n;
       });
     }
+    data.stato = res.stato;
     showDone(data);
   } catch (err) {
     const msg = err.message === 'notify'
@@ -345,6 +359,7 @@ function showDone(d){
       <div class="row"><button class="btn" id="ics">Aggiungi al calendario</button></div>`;
   }
 
+  if (d.stato === 'pending') html += `<p class="hint">Ti abbiamo inviato anche una mail per confermare l'iscrizione alla nostra lista: cliccala per ricevere le prossime comunicazioni.</p>`;
   const done = $('#done');
   done.innerHTML = `<div class="card head">${html}</div>`;
   form.hidden = true; done.hidden = false;
