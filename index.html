@@ -18,7 +18,7 @@
        padding:24px 16px calc(48px + env(safe-area-inset-bottom,0px));}
   .wrap{max-width:640px;margin:0 auto}
   .card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:24px;margin-bottom:12px}
-   .banner{display:block;width:100%;height:auto;aspect-ratio:4/1;object-fit:cover;border-radius:8px;margin-bottom:12px;border:1px solid var(--line)}
+  .banner{display:block;width:100%;height:auto;aspect-ratio:4/1;object-fit:cover;border-radius:8px;margin-bottom:12px;border:1px solid var(--line)}
   .head{border-top:10px solid var(--accent)}
   h1{font:400 32px/1.25 "Google Sans",Roboto,Arial,sans-serif;margin:0 0 12px}
   .head p{margin:0;font-size:14px}
@@ -62,7 +62,8 @@
 </head>
 <body>
 <main class="wrap">
- <img class="banner" src="banner.jpg" alt="Pulsar Season 3">
+  <img class="banner" src="banner.jpg" alt="Pulsar Season 3">
+
   <section class="card head">
     <h1>Acquista il Pulsar Season 3 Full Pass!</h1>
     <p>Lascia i tuoi dati e scegli la modalità di acquisto dell'abbonamento alla terza stagione di Pulsar.</p>
@@ -253,21 +254,34 @@ function mailchimpSubscribe(data){
   });
 }
 
-// Notifica alla segreteria di Zo per le richieste di appuntamento pomeridiano
+// Notifica a Zo per ogni modulo compilato, qualunque sia la modalità
+const MODALITA_NOMI = {
+  BONIFICO: 'Bonifico',
+  ZO_FERIALE: 'Ritiro a Zo di mattina (lun-ven 10-13:30, prenota al telefono)',
+  ZO_POMERIGGIO: 'Ritiro a Zo di pomeriggio (15-17, da concordare)',
+  ZO_HEARTWORMS: 'Acquisto alla cassa la sera del live di Heartworms (09/10)'
+};
 async function notifySegreteria(d){
   if (!CONFIG.mailchimp.actionUrl && !CONFIG.mailchimp.apiUrl) return; // modalità demo: nessun invio reale
-  const giornoIt = new Date(d.giorno + 'T12:00').toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  const breve = { BONIFICO:'Bonifico', ZO_FERIALE:'Mattino', ZO_POMERIGGIO:'Pomeriggio', ZO_HEARTWORMS:'Serata Heartworms' }[d.modalita];
+  const campi = {
+    Nome: d.nome, Cognome: d.cognome, Email: d.email, Telefono: d.telefono,
+    'Modalita di acquisto': MODALITA_NOMI[d.modalita]
+  };
+  let oggetto = `Nuovo Full Pass (${breve}): ${d.nome} ${d.cognome}`;
+  if (d.modalita === 'ZO_POMERIGGIO') {
+    const giornoIt = new Date(d.giorno + 'T12:00').toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+    campi['Giorno richiesto per il ritiro'] = giornoIt;
+    campi['Orario ritiro'] = 'dalle 15:00 alle 17:00';
+    oggetto = `Richiesta appuntamento pomeridiano Full Pass: ${d.nome} ${d.cognome} (${giornoIt})`;
+  }
+  campi['Prezzo Full Pass da applicare'] = (d.importo || CONFIG.bonifico.importo || 'prezzo pieno')
+    + (d.riservato ? ' (riservato acquirenti biglietto Heartworms)' : '');
   const r = await fetch(CONFIG.segreteria.endpoint, {
     signal: AbortSignal.timeout ? AbortSignal.timeout(15000) : undefined,
     method:'POST',
     headers:{'Content-Type':'application/json','Accept':'application/json'},
-    body: JSON.stringify({
-      _subject: `Richiesta ritiro pomeridiano Full Pass: ${d.nome} ${d.cognome} (${giornoIt})`,
-      _template: 'table', _captcha: 'false', _replyto: d.email,
-      Nome: d.nome, Cognome: d.cognome, Email: d.email, Telefono: d.telefono,
-      'Giorno preferito': giornoIt, Fascia: '15:00 - 17:00',
-      Prezzo: (d.importo || CONFIG.bonifico.importo || 'standard') + (d.riservato ? ' (riservato biglietto Heartworms)' : '')
-    })
+    body: JSON.stringify({ _subject: oggetto, _template: 'table', _captcha: 'false', _replyto: d.email, ...campi })
   });
   const j = await r.json().catch(() => ({}));
   if (!r.ok || String(j.success) === 'false') {
@@ -296,7 +310,10 @@ form.addEventListener('submit', async e => {
       throw new Error(m ? `${m[2]} (Mailchimp, campo MERGE${m[1]})` : raw);
     }
     data.stato = res.stato; data.importo = res.importo || ''; data.riservato = !!res.riservato;
-    if (data.modalita === 'ZO_POMERIGGIO') {
+    if (data.modalita !== 'ZO_POMERIGGIO') {
+      // per le altre modalità la mail a Zo è informativa: se non parte, l'acquirente non viene bloccato
+      await notifySegreteria(data).catch(e => console.warn('Notifica a Zo non inviata', e));
+    } else {
       await notifySegreteria(data).catch(e => {
         const n = new Error('notify');
         n.detail = e.detail || (location.protocol === 'file:' ? 'La pagina è aperta come file dal computer: caricala online per inviare la mail.' : '');
